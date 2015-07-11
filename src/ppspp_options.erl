@@ -32,6 +32,7 @@
          get_content_integrity_check_method/1,
          get_merkle_hash_tree_function/1,
          get_minimum_version/1,
+         get_chunk_size/1,
          get_swarm_id/1,
          get_maximum_supported_version/1,
          get_options/1,
@@ -246,6 +247,11 @@ get_minimum_version(Options) ->
 get_swarm_id(Options) ->
     get(swarm_id, Options).
 
+%% @doc Returns the swarm chunk size
+-spec get_chunk_size(options()) -> pos_integer().
+get_chunk_size(Options) ->
+    get(chunk_size, Options).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @doc Returns the highest accepted PPSP version for the swarm.
 -spec get_maximum_supported_version(options()) -> any().
@@ -307,19 +313,3 @@ use_minimum_options() ->
 -spec pack(options()) -> binary().
 
 pack(_) -> <<>>.
-
--ifdef(TEST).
--spec defaults_test() -> term().
-defaults_test() ->
-    Root_Hash ="c39e",
-    Swarm_id = convert:hex_string_to_padded_binary(Root_Hash),
-    Expected = {options,
-                [{chunk_addressing_method,chunking_32bit_chunks},
-                 {chunk_size,1024},
-                 {content_integrity_check_method,merkle_hash_tree},
-                 {merkle_hash_tree_function,sha},
-                 {minimum_version,1},
-                 {swarm_id, Swarm_id},
-                 {version,1}]},
-    ?assertEqual( Expected, use_default_options(Swarm_id)).
--endif.
